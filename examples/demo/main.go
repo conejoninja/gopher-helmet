@@ -5,7 +5,9 @@
 package main
 
 import (
+	"encoding/hex"
 	"image/color"
+	"log"
 	"math/rand"
 	"strconv"
 	"time"
@@ -91,9 +93,42 @@ func main() {
 		}
 	}
 
-	gopherhelmet.InitBLE()
+	go gopherhelmet.InitBLE(backpack, func(str string) {
+		println("CALLBACK", str, str[:7])
+		if str[:7] == "TINYGO" {
+			if str[7:10] == "EAR" {
+				a, _ := strconv.Atoi(str[11:])
+				ears.Set(str[10], int16(a)-1)
+			} else if str[7:10] == "MOD" {
+				s := str[11:]
+				if s == "demo" {
+					visorMode = Demo
+				} else if s == "eyes" {
+					visorMode = Eyes
+				} else if s == "co2" {
+					visorMode = CO2
+				} else if s == "axis" {
+					visorMode = Axis
+				} else if s == "message" {
+					visorMode = Message
+				}
+			} else if str[7:10] == "MSG" {
+				b, err := hex.DecodeString(str[11:17] + "FF")
+				if err != nil {
+					log.Fatal(err)
+				}
 
-	//visor.BootUp()
+				msgs[str[10]] = Msg{
+					c:    color.RGBA{b[0], b[1], b[2], b[3]},
+					text: str[17:],
+				}
+			} else if str[7:10] == "EYE" {
+
+			}
+		}
+	})
+
+	visor.BootUp()
 	go earsLoop()
 	go antennaLoop()
 
@@ -101,7 +136,7 @@ func main() {
 }
 
 func visorLoop() {
-	var step uint8 = 2
+	var step uint8 = 0
 	for {
 		switch visorMode {
 		case Demo:
@@ -122,6 +157,7 @@ func visorLoop() {
 				visor.Marquee(msgs[2].text, msgs[2].c)
 				break
 			case 5:
+				lookingSides(gopherhelmet.Red)
 				break
 			case 6:
 				visor.Marquee(msgs[3].text, msgs[3].c)
@@ -133,6 +169,7 @@ func visorLoop() {
 				visor.Marquee(msgs[4].text, msgs[4].c)
 				break
 			case 9:
+				lookingSides(gopherhelmet.Blue)
 				break
 			}
 			step++
@@ -145,8 +182,12 @@ func visorLoop() {
 			visorMode = Demo
 			break
 		case CO2:
+			co2Marquee()
+			visorMode = Demo
 			break
 		case Axis:
+			demoAxis()
+			visorMode = Demo
 			break
 		case Message:
 			visorMode = Demo

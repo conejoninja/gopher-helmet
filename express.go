@@ -14,6 +14,6 @@ var (
 	servo2 servo.PWM = machine.TCC1
 )
 
-func InitBLE() {
+func InitBLE(device *BackpackDevice, fn BLECallback) {
 	// Do nothing, this board doesn't have BLE
 }

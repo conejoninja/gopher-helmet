@@ -64,6 +64,14 @@ var (
 		{"FREE PINS AND STICKERS", gopherhelmet.Green},
 	}
 	visorStep = 0
+
+	msgColored = gopherhelmet.TextColorSequence{
+		{Text: "WWW", Color: gopherhelmet.Green},
+		{Text: ".", Color: gopherhelmet.Yellow},
+		{Text: "TINYGO", Color: gopherhelmet.Blue},
+		{Text: ".", Color: gopherhelmet.Yellow},
+		{Text: "ORG", Color: gopherhelmet.Magenta},
+	}
 )
 
 func main() {
@@ -142,7 +150,8 @@ func visorLoop() {
 		case Demo:
 			switch step {
 			case 0:
-				visor.Marquee(msgs[0].text, msgs[0].c)
+				visor.MarqueeColored(msgColored)
+				//visor.Marquee(msgs[0].text, msgs[0].c)
 				break
 			case 1:
 				co2Marquee()

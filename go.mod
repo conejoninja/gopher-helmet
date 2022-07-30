@@ -1,9 +1,10 @@
 module github.com/conejoninja/gopher-helmet
 
-go 1.17
+go 1.18
 
 require (
-	tinygo.org/x/drivers v0.20.1-0.20220511024701-1d2a1f23c3a8
+	tinygo.org/x/bluetooth v0.5.0
+	tinygo.org/x/drivers v0.21.0
 	tinygo.org/x/tinyfont v0.3.0
 )
 
@@ -16,5 +17,4 @@ require (
 	github.com/muka/go-bluetooth v0.0.0-20210812063148-b6c83362e27d // indirect
 	github.com/sirupsen/logrus v1.6.0 // indirect
 	golang.org/x/sys v0.0.0-20210423082822-04245dca01da // indirect
-	tinygo.org/x/bluetooth v0.5.0 // indirect
 )

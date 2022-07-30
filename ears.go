@@ -44,6 +44,11 @@ func (b *EarsDevice) Front() {
 	b.Set(2, 0)
 }
 
+func (b *EarsDevice) Off() {
+	b.Left.SetMicroseconds(0)
+	b.Right.SetMicroseconds(0)
+}
+
 func (b *EarsDevice) Set(ear uint8, angle int16) {
 	x := 10 * int16(angle)
 	if ear == 0 || ear == 2 {

@@ -1,7 +1,3 @@
-// Connects to an WS2812 RGB LED strip with 10 LEDS.
-//
-// See either the others.go or digispark.go files in this directory
-// for the neopixels pin assignments.
 package main
 
 import (
@@ -61,17 +57,18 @@ var (
 	antennaColor color.RGBA
 
 	msgs = [5]Msg{
-		{"HACK SESSION TINYGO FRIDAY 9:00", gopherhelmet.Red},
+		{"WWW.TINYGO.ORG", gopherhelmet.Red},
 		{"ASK ME ABOUT TINYGO", gopherhelmet.Blue},
 		{"@_CONEJO - TECHNOLOGIST FOR HIRE", gopherhelmet.Magenta},
 		{"TALK - TINYGO: GETTING THE UPPER HEN BY DONIA CHAIEHLOUDJ", gopherhelmet.Yellow},
 		{"FREE PINS AND STICKERS", gopherhelmet.Green},
 	}
+	visorStep = 0
 )
 
 func main() {
 
-	time.Sleep(2 * time.Second)
+	//time.Sleep(2 * time.Second)
 	accel = gopherhelmet.Accelerometer()
 	visor = gopherhelmet.Visor()
 	speaker = gopherhelmet.Speaker()
@@ -122,12 +119,15 @@ func main() {
 					c:    color.RGBA{b[0], b[1], b[2], b[3]},
 					text: str[17:],
 				}
+				visorStep = int(str[10])
+				visorMode = Message
 			} else if str[7:10] == "EYE" {
 
 			}
 		}
 	})
 
+	ears.Set(2, 90)
 	visor.BootUp()
 	go earsLoop()
 	go antennaLoop()
@@ -157,7 +157,7 @@ func visorLoop() {
 				visor.Marquee(msgs[2].text, msgs[2].c)
 				break
 			case 5:
-				lookingSides(gopherhelmet.Red)
+				lookingSuspicious(gopherhelmet.Red)
 				break
 			case 6:
 				visor.Marquee(msgs[3].text, msgs[3].c)
@@ -169,7 +169,7 @@ func visorLoop() {
 				visor.Marquee(msgs[4].text, msgs[4].c)
 				break
 			case 9:
-				lookingSides(gopherhelmet.Blue)
+				lookingUwU(gopherhelmet.Blue)
 				break
 			}
 			step++
@@ -190,6 +190,7 @@ func visorLoop() {
 			visorMode = Demo
 			break
 		case Message:
+			visor.Marquee(msgs[visorStep].text, msgs[visorStep].c)
 			visorMode = Demo
 			break
 		}
@@ -203,10 +204,11 @@ func earsLoop() {
 	for {
 		switch earsMode {
 		case Idle:
+			ears.Off()
 			if rand.Int31n(1000) == 1 {
 				angle = 90
 				forward = true
-				//earsMode = Swipe
+				earsMode = Swipe
 			}
 			break
 		case Swipe:
@@ -306,6 +308,9 @@ func demoAxis() {
 }
 
 func co2Marquee() {
+	if !UseCO2Sensor {
+		return
+	}
 	var co2 int32
 	var err error
 	for i := 0; i < 5; i++ {
@@ -331,8 +336,23 @@ func co2Marquee() {
 		antennaColor = color.RGBA{R: 0xff, G: 0xff, B: 0x00}
 	default:
 		antennaColor = color.RGBA{R: 0xff, G: 0x00, B: 0x00}
+		go beepBeep()
 	}
 	antennaMode = Beeping
 	visor.Marquee("CO2 LEVELS: "+strconv.Itoa(int(co2))+" PPM", antennaColor)
 	antennaMode = RGB
+}
+
+func beepBeep() {
+	speaker.Bloop()
+	time.Sleep(50 * time.Millisecond)
+	speaker.Blip()
+	time.Sleep(50 * time.Millisecond)
+	speaker.Bleep()
+	time.Sleep(50 * time.Millisecond)
+	speaker.Bloop()
+	time.Sleep(50 * time.Millisecond)
+	speaker.Blip()
+	time.Sleep(50 * time.Millisecond)
+	speaker.Bleep()
 }

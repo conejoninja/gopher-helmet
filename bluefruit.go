@@ -5,8 +5,6 @@ package gopherhelmet
 
 import (
 	"machine"
-	"time"
-
 	"tinygo.org/x/bluetooth"
 	"tinygo.org/x/drivers/servo"
 )
@@ -26,7 +24,7 @@ var (
 )
 
 func InitBLE(device *BackpackDevice, fn BLECallback) {
-	println("starting")
+	/*println("starting")
 
 	adapter.SetConnectHandler(func(d bluetooth.Addresser, c bool) {
 		connected = c
@@ -84,7 +82,7 @@ func InitBLE(device *BackpackDevice, fn BLECallback) {
 		}
 
 		time.Sleep(100 * time.Millisecond)
-	}
+	} */
 }
 
 func must(action string, err error) {

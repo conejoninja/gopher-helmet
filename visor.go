@@ -3,6 +3,7 @@ package gopherhelmet
 import (
 	"image/color"
 	"machine"
+	"strings"
 	"time"
 
 	"github.com/conejoninja/gopher-helmet/fonts"
@@ -91,6 +92,32 @@ func (v *VisorDevice) Marquee(text string, c color.RGBA) {
 	for i := int16(17); i > int16(-w32); i-- {
 		v.Clear()
 		tinyfont.WriteLine(v.Device, &fonts.TomThumb, i, 5, text, c)
+		v.Display()
+		time.Sleep(200 * time.Millisecond)
+	}
+}
+
+//TextColorSequence - sequence of stings, each can have different color
+type TextColorSequence []TextColorSequenceElement
+type TextColorSequenceElement struct {
+	Text  string
+	Color color.RGBA
+}
+
+func (v *VisorDevice) MarqueeColored(sequence TextColorSequence) {
+	var wholeText strings.Builder
+	var colors []color.RGBA
+	for _, element := range sequence {
+		for _, t := range element.Text {
+			wholeText.WriteRune(t)
+			colors = append(colors, element.Color)
+		}
+	}
+	text := wholeText.String()
+	w32, _ := tinyfont.LineWidth(&tinyfont.TomThumb, text)
+	for i := int16(17); i > int16(-w32); i-- {
+		v.Clear()
+		tinyfont.WriteLineColors(v.Device, &tinyfont.TomThumb, i, 5, text, colors)
 		v.Display()
 		time.Sleep(200 * time.Millisecond)
 	}

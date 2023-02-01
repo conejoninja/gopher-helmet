@@ -29,6 +29,7 @@ const (
 	CO2
 	Axis
 	Message
+	Beer
 
 	Idle uint8 = iota
 	Swipe
@@ -71,6 +72,30 @@ var (
 		{Text: "TINYGO", Color: gopherhelmet.Blue},
 		{Text: ".", Color: gopherhelmet.Yellow},
 		{Text: "ORG", Color: gopherhelmet.Magenta},
+	}
+
+	msgColoredRonTalk = gopherhelmet.TextColorSequence{
+		{Text: "TALK: ", Color: gopherhelmet.Green},
+		{Text: "GO EVEN FURTHER WITHOUT WIRES", Color: gopherhelmet.Yellow},
+		{Text: " BY ", Color: gopherhelmet.Blue},
+		{Text: "@DEADPROGRAM", Color: gopherhelmet.Yellow},
+		{Text: " UD2.218A - 13:00", Color: gopherhelmet.Magenta},
+	}
+
+	msgColoredConejoTalk = gopherhelmet.TextColorSequence{
+		{Text: "TALK: ", Color: gopherhelmet.Green},
+		{Text: "VISUALLY PROGRAMMING GO", Color: gopherhelmet.Yellow},
+		{Text: " BY ", Color: gopherhelmet.Blue},
+		{Text: "@_CONEJO", Color: gopherhelmet.Yellow},
+		{Text: " UD2.218A - 17:30", Color: gopherhelmet.Magenta},
+	}
+
+	msgColoredBeer = gopherhelmet.TextColorSequence{
+		{Text: "I ", Color: gopherhelmet.Green},
+		{Text: "NEED ", Color: gopherhelmet.Yellow},
+		{Text: "SOME ", Color: gopherhelmet.Blue},
+		{Text: "BEER ", Color: gopherhelmet.Yellow},
+		{Text: "PLEASE", Color: gopherhelmet.Magenta},
 	}
 )
 
@@ -139,6 +164,7 @@ func main() {
 	visor.BootUp()
 	go earsLoop()
 	go antennaLoop()
+	go buttonsLoop()
 
 	visorLoop()
 }
@@ -157,7 +183,8 @@ func visorLoop() {
 				co2Marquee()
 				break
 			case 2:
-				visor.Marquee(msgs[1].text, msgs[1].c)
+				visor.MarqueeColored(msgColoredConejoTalk)
+				//visor.Marquee(msgs[1].text, msgs[1].c)
 				break
 			case 3:
 				lookingSides(gopherhelmet.White)
@@ -169,7 +196,8 @@ func visorLoop() {
 				lookingSuspicious(gopherhelmet.Red)
 				break
 			case 6:
-				visor.Marquee(msgs[3].text, msgs[3].c)
+				visor.MarqueeColored(msgColoredRonTalk)
+				//visor.Marquee(msgs[3].text, msgs[3].c)
 				break
 			case 7:
 				demoAxis()
@@ -196,6 +224,10 @@ func visorLoop() {
 			break
 		case Axis:
 			demoAxis()
+			visorMode = Demo
+			break
+		case Beer:
+			visor.MarqueeColored(msgColoredBeer)
 			visorMode = Demo
 			break
 		case Message:
@@ -312,6 +344,15 @@ func demoAxis() {
 		}
 
 		visor.Display()
+		time.Sleep(50 * time.Millisecond)
+	}
+}
+
+func buttonsLoop() {
+	for {
+		if left.Pushed() {
+			visorMode = Beer
+		}
 		time.Sleep(50 * time.Millisecond)
 	}
 }

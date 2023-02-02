@@ -30,6 +30,7 @@ const (
 	Axis
 	Message
 	Beer
+	TinyGlobo
 
 	Idle uint8 = iota
 	Swipe
@@ -79,7 +80,7 @@ var (
 		{Text: "GO EVEN FURTHER WITHOUT WIRES", Color: gopherhelmet.Yellow},
 		{Text: " BY ", Color: gopherhelmet.Blue},
 		{Text: "@DEADPROGRAM", Color: gopherhelmet.Yellow},
-		{Text: " UD2.218A - 13:00", Color: gopherhelmet.Magenta},
+		{Text: " UD2.218A - 13:00 SAT", Color: gopherhelmet.Magenta},
 	}
 
 	msgColoredConejoTalk = gopherhelmet.TextColorSequence{
@@ -87,7 +88,7 @@ var (
 		{Text: "VISUALLY PROGRAMMING GO", Color: gopherhelmet.Yellow},
 		{Text: " BY ", Color: gopherhelmet.Blue},
 		{Text: "@_CONEJO", Color: gopherhelmet.Yellow},
-		{Text: " UD2.218A - 17:30", Color: gopherhelmet.Magenta},
+		{Text: " UD2.218A - 17:30 SAT", Color: gopherhelmet.Magenta},
 	}
 
 	msgColoredBeer = gopherhelmet.TextColorSequence{
@@ -96,6 +97,14 @@ var (
 		{Text: "SOME ", Color: gopherhelmet.Blue},
 		{Text: "BEER ", Color: gopherhelmet.Yellow},
 		{Text: "PLEASE", Color: gopherhelmet.Magenta},
+	}
+
+	msgColoredTinyGlobo = gopherhelmet.TextColorSequence{
+		{Text: "TINY", Color: gopherhelmet.Green},
+		{Text: "GLOBO ", Color: gopherhelmet.Yellow},
+		{Text: "LAUNCH PARTY ", Color: gopherhelmet.Blue},
+		{Text: "SUNDAY 11:45 ", Color: gopherhelmet.Yellow},
+		{Text: "ULB CAMPUS", Color: gopherhelmet.Magenta},
 	}
 )
 
@@ -206,7 +215,7 @@ func visorLoop() {
 				visor.Marquee(msgs[4].text, msgs[4].c)
 				break
 			case 9:
-				lookingUwU(gopherhelmet.Blue)
+				visor.MarqueeColored(msgColoredTinyGlobo)
 				break
 			}
 			step++
@@ -228,6 +237,10 @@ func visorLoop() {
 			break
 		case Beer:
 			visor.MarqueeColored(msgColoredBeer)
+			visorMode = Demo
+			break
+		case TinyGlobo:
+			visor.MarqueeColored(msgColoredTinyGlobo)
 			visorMode = Demo
 			break
 		case Message:
@@ -352,6 +365,9 @@ func buttonsLoop() {
 	for {
 		if left.Pushed() {
 			visorMode = Beer
+		}
+		if right.Pushed() {
+			visorMode = TinyGlobo
 		}
 		time.Sleep(50 * time.Millisecond)
 	}

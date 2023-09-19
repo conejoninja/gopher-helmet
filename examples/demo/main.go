@@ -1,12 +1,12 @@
 package main
 
 import (
-	"encoding/hex"
+	"github.com/conejoninja/gopher-helmet/fonts"
 	"image/color"
-	"log"
 	"math/rand"
 	"strconv"
 	"time"
+	"tinygo.org/x/tinyfont"
 
 	"tinygo.org/x/drivers/scd4x"
 
@@ -21,7 +21,7 @@ type Msg struct {
 }
 
 const (
-	UseCO2Sensor = true
+	UseCO2Sensor = false
 
 	Bootup uint8 = iota
 	Demo
@@ -31,6 +31,7 @@ const (
 	Message
 	Beer
 	TinyGlobo
+	Countdown
 
 	Idle uint8 = iota
 	Swipe
@@ -60,8 +61,8 @@ var (
 
 	msgs = [5]Msg{
 		{"WWW.TINYGO.ORG", gopherhelmet.Red},
-		{"ASK ME ABOUT TINYGO", gopherhelmet.Blue},
-		{"@_CONEJO - TECHNOLOGIST FOR HIRE", gopherhelmet.Magenta},
+		{"ASK ME ABOUT GOPHER BADGES", gopherhelmet.Blue},
+		{"@DEADPROGRAM TECHNOLOGIST FOR HIRE", gopherhelmet.Magenta},
 		{"TALK - TINYGO: GETTING THE UPPER HEN BY DONIA CHAIEHLOUDJ", gopherhelmet.Yellow},
 		{"FREE PINS AND STICKERS", gopherhelmet.Green},
 	}
@@ -76,35 +77,33 @@ var (
 	}
 
 	msgColoredRonTalk = gopherhelmet.TextColorSequence{
-		{Text: "TALK: ", Color: gopherhelmet.Green},
-		{Text: "GO EVEN FURTHER WITHOUT WIRES", Color: gopherhelmet.Yellow},
-		{Text: " BY ", Color: gopherhelmet.Blue},
-		{Text: "@DEADPROGRAM", Color: gopherhelmet.Yellow},
-		{Text: " UD2.218A - 13:00 SAT", Color: gopherhelmet.Magenta},
+		{Text: "LOOKING", Color: gopherhelmet.Green},
+		{Text: " FOR ", Color: gopherhelmet.Yellow},
+		{Text: "FUNDING", Color: gopherhelmet.Blue},
 	}
 
 	msgColoredConejoTalk = gopherhelmet.TextColorSequence{
-		{Text: "TALK: ", Color: gopherhelmet.Green},
-		{Text: "VISUALLY PROGRAMMING GO", Color: gopherhelmet.Yellow},
-		{Text: " BY ", Color: gopherhelmet.Blue},
-		{Text: "@_CONEJO", Color: gopherhelmet.Yellow},
-		{Text: " UD2.218A - 17:30 SAT", Color: gopherhelmet.Magenta},
+		{Text: "GOPHER", Color: gopherhelmet.Green},
+		{Text: "CON", Color: gopherhelmet.Yellow},
+		{Text: "EU ", Color: gopherhelmet.Blue},
+		{Text: " SOOO ", Color: gopherhelmet.Red},
+		{Text: " COOL", Color: gopherhelmet.Magenta},
 	}
 
-	msgColoredBeer = gopherhelmet.TextColorSequence{
-		{Text: "I ", Color: gopherhelmet.Green},
-		{Text: "NEED ", Color: gopherhelmet.Yellow},
-		{Text: "SOME ", Color: gopherhelmet.Blue},
-		{Text: "BEER ", Color: gopherhelmet.Yellow},
-		{Text: "PLEASE", Color: gopherhelmet.Magenta},
+	msgLaunch = gopherhelmet.TextColorSequence{
+		{Text: "LAUNCH !! ", Color: gopherhelmet.Green},
+		{Text: "GO ", Color: gopherhelmet.Yellow},
+		{Text: "TINY", Color: gopherhelmet.Blue},
+		{Text: "GLOBO ", Color: gopherhelmet.Red},
+		{Text: "GO", Color: gopherhelmet.Magenta},
 	}
 
 	msgColoredTinyGlobo = gopherhelmet.TextColorSequence{
 		{Text: "TINY", Color: gopherhelmet.Green},
 		{Text: "GLOBO ", Color: gopherhelmet.Yellow},
 		{Text: "LAUNCH PARTY ", Color: gopherhelmet.Blue},
-		{Text: "SUNDAY 11:45 ", Color: gopherhelmet.Yellow},
-		{Text: "ULB CAMPUS", Color: gopherhelmet.Magenta},
+		{Text: "TODAY 12:30 ", Color: gopherhelmet.Red},
+		{Text: "FRONT DOOR", Color: gopherhelmet.Magenta},
 	}
 )
 
@@ -132,7 +131,7 @@ func main() {
 		}
 	}
 
-	go gopherhelmet.InitBLE(backpack, func(str string) {
+	/*go gopherhelmet.InitBLE(backpack, func(str string) {
 		println("CALLBACK", str, str[:7])
 		if str[:7] == "TINYGO" {
 			if str[7:10] == "EAR" {
@@ -167,14 +166,14 @@ func main() {
 
 			}
 		}
-	})
+	})  */
+	//CountdownF()
 
 	ears.Set(2, 90)
 	visor.BootUp()
 	go earsLoop()
 	go antennaLoop()
 	go buttonsLoop()
-
 	visorLoop()
 }
 
@@ -236,7 +235,7 @@ func visorLoop() {
 			visorMode = Demo
 			break
 		case Beer:
-			visor.MarqueeColored(msgColoredBeer)
+			visor.MarqueeColored(msgLaunch)
 			visorMode = Demo
 			break
 		case TinyGlobo:
@@ -246,6 +245,9 @@ func visorLoop() {
 		case Message:
 			visor.Marquee(msgs[visorStep].text, msgs[visorStep].c)
 			visorMode = Demo
+			break
+		case Countdown:
+			CountdownF()
 			break
 		}
 		time.Sleep(50 * time.Millisecond)
@@ -364,7 +366,7 @@ func demoAxis() {
 func buttonsLoop() {
 	for {
 		if left.Pushed() {
-			visorMode = Beer
+			visorMode = Countdown
 		}
 		if right.Pushed() {
 			visorMode = TinyGlobo
@@ -421,4 +423,80 @@ func beepBeep() {
 	speaker.Blip()
 	time.Sleep(50 * time.Millisecond)
 	speaker.Bleep()
+}
+
+func CountdownF() {
+	t := time.Duration(932)
+	visor.Clear()
+	tinyfont.WriteLine(visor.Device, &fonts.TomThumb, 5, 5, "10", gopherhelmet.White)
+	visor.Display()
+	speaker.Blip()
+	time.Sleep(t * time.Millisecond)
+
+	visor.Clear()
+	tinyfont.WriteLine(visor.Device, &fonts.TomThumb, 6, 5, "9", gopherhelmet.White)
+	visor.Display()
+	speaker.Blip()
+	time.Sleep(t * time.Millisecond)
+
+	visor.Clear()
+	tinyfont.WriteLine(visor.Device, &fonts.TomThumb, 6, 5, "8", gopherhelmet.White)
+	visor.Display()
+	speaker.Blip()
+	time.Sleep(t * time.Millisecond)
+
+	visor.Clear()
+	tinyfont.WriteLine(visor.Device, &fonts.TomThumb, 6, 5, "7", gopherhelmet.White)
+	visor.Display()
+	speaker.Blip()
+	time.Sleep(t * time.Millisecond)
+
+	visor.Clear()
+	tinyfont.WriteLine(visor.Device, &fonts.TomThumb, 6, 5, "6", gopherhelmet.White)
+	visor.Display()
+	speaker.Blip()
+	time.Sleep(t * time.Millisecond)
+
+	visor.Clear()
+	tinyfont.WriteLine(visor.Device, &fonts.TomThumb, 6, 5, "5", gopherhelmet.White)
+	visor.Display()
+	speaker.Blip()
+	time.Sleep(t * time.Millisecond)
+
+	visor.Clear()
+	tinyfont.WriteLine(visor.Device, &fonts.TomThumb, 6, 5, "4", gopherhelmet.White)
+	visor.Display()
+	speaker.Blip()
+	time.Sleep(t * time.Millisecond)
+
+	visor.Clear()
+	tinyfont.WriteLine(visor.Device, &fonts.TomThumb, 6, 5, "3", gopherhelmet.White)
+	visor.Display()
+	speaker.Blip()
+	time.Sleep(t * time.Millisecond)
+
+	visor.Clear()
+	tinyfont.WriteLine(visor.Device, &fonts.TomThumb, 6, 5, "2", gopherhelmet.White)
+	visor.Display()
+	speaker.Blip()
+	time.Sleep(t * time.Millisecond)
+
+	visor.Clear()
+	tinyfont.WriteLine(visor.Device, &fonts.TomThumb, 6, 5, "1", gopherhelmet.White)
+	visor.Display()
+	speaker.Blip()
+	time.Sleep(t * time.Millisecond)
+
+	visor.Clear()
+	tinyfont.WriteLine(visor.Device, &fonts.TomThumb, 6, 5, "0", gopherhelmet.White)
+	visor.Display()
+	speaker.Blip()
+	time.Sleep(30 * time.Millisecond)
+	speaker.Blip()
+	time.Sleep(30 * time.Millisecond)
+	speaker.Blip()
+	time.Sleep(30 * time.Millisecond)
+
+	visor.MarqueeColored(msgLaunch)
+	visorMode = Demo
 }

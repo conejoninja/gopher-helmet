@@ -18,16 +18,16 @@ type EarsDevice struct {
 }
 
 func Ears() *EarsDevice {
-	left, err := servo.New(servo1, machine.A1)
-	if err != nil {
+	//left, err := servo.New(servo1, machine.A1)
+	/*if err != nil {
 		println("could not configure servo")
-	}
+	} */
 	right, err := servo.New(servo2, machine.A3)
 	if err != nil {
 		println("could not configure servo R")
 	}
 	return &EarsDevice{
-		Left:  left,
+		//Left:  left,
 		Right: right,
 	}
 }
@@ -52,7 +52,7 @@ func (b *EarsDevice) Off() {
 func (b *EarsDevice) Set(ear uint8, angle int16) {
 	x := 10 * int16(angle)
 	if ear == 0 || ear == 2 {
-		b.Left.SetMicroseconds(ServoMax - x)
+		//b.Left.SetMicroseconds(ServoMax - x)
 	}
 	if ear == 1 || ear == 2 {
 		b.Right.SetMicroseconds(ServoMin + x)

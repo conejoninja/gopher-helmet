@@ -15,7 +15,7 @@ type SpeakerDevice struct {
 func Speaker() *SpeakerDevice {
 	speakerShutdown := machine.D11
 	speakerShutdown.Configure(machine.PinConfig{Mode: machine.PinOutput})
-	speakerShutdown.Low()
+	speakerShutdown.High()
 
 	speaker := machine.D12
 	speaker.Configure(machine.PinConfig{Mode: machine.PinOutput})

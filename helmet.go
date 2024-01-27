@@ -45,7 +45,7 @@ func EnsureADCInit() {
 // is only initialized once.
 func EnsureI2CInit() {
 	if !i2cInitComplete {
-		machine.I2C1.Configure(machine.I2CConfig{SCL: machine.SCL1_PIN, SDA: machine.SDA1_PIN})
+		machine.I2C1.Configure(machine.I2CConfig{SCL: sclPin, SDA: sdaPin})
 		i2cInitComplete = true
 	}
 }

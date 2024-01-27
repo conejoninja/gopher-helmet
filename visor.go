@@ -20,7 +20,7 @@ type VisorDevice struct {
 
 // Visor returns a new VisorDevice to control Gopherbot Visor.
 func Visor() *VisorDevice {
-	neo := machine.A2
+	neo := visorPin
 	neo.Configure(machine.PinConfig{Mode: machine.PinOutput})
 	v := ws2812.New(neo)
 
@@ -97,7 +97,7 @@ func (v *VisorDevice) Marquee(text string, c color.RGBA) {
 	}
 }
 
-//TextColorSequence - sequence of stings, each can have different color
+// TextColorSequence - sequence of stings, each can have different color
 type TextColorSequence []TextColorSequenceElement
 type TextColorSequenceElement struct {
 	Text  string

@@ -13,7 +13,7 @@ type LEDDevice struct {
 
 // StatusLED returns the built-in LED of the Circuit Playground Express.
 func StatusLED() *LEDDevice {
-	led := machine.LED
+	led := ledPin
 	led.Configure(machine.PinConfig{Mode: machine.PinOutput})
 
 	return &LEDDevice{

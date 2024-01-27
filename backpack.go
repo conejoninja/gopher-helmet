@@ -16,7 +16,7 @@ type BackpackDevice struct {
 
 // Backpack returns a BackpackDevice to control Gopherbot Backpack.
 func Backpack() *BackpackDevice {
-	neo := machine.NEOPIXELS
+	neo := neopixelsPin
 	neo.Configure(machine.PinConfig{Mode: machine.PinOutput})
 	v := ws2812.New(neo)
 

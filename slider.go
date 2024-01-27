@@ -16,7 +16,7 @@ func (s *SliderDevice) IsOn() bool {
 
 // Slider returns the SliderDevice.
 func Slider() *SliderDevice {
-	slider := machine.SLIDER
+	slider := sliderPin
 	slider.Configure(machine.PinConfig{Mode: machine.PinInputPullup})
 
 	return &SliderDevice{slider}

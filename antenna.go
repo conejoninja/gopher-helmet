@@ -14,7 +14,7 @@ type AntennaDevice struct {
 
 // Antenna returns a the Antenna to control the Gopherbot Antenna LED.
 func Antenna() *AntennaDevice {
-	led := machine.A6
+	led := antennaPin
 	led.Configure(machine.PinConfig{Mode: machine.PinOutput})
 
 	v := ws2812.New(led)

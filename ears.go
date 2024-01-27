@@ -1,8 +1,6 @@
 package gopherhelmet
 
 import (
-	"machine"
-
 	"tinygo.org/x/drivers/servo"
 )
 
@@ -18,11 +16,11 @@ type EarsDevice struct {
 }
 
 func Ears() *EarsDevice {
-	left, err := servo.New(servo1, machine.A1)
+	left, err := servo.New(servo1, earLeftPin)
 	if err != nil {
 		println("could not configure servo")
 	}
-	right, err := servo.New(servo2, machine.A3)
+	right, err := servo.New(servo2, earRightPin)
 	if err != nil {
 		println("could not configure servo R")
 	}

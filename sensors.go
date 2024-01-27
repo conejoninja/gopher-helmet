@@ -35,7 +35,7 @@ type ThermometerDevice struct {
 func Thermometer() *ThermometerDevice {
 	EnsureADCInit()
 
-	s := thermistor.New(machine.TEMPSENSOR)
+	s := thermistor.New(tempPin)
 	s.Configure()
 
 	return &ThermometerDevice{
@@ -52,7 +52,7 @@ type LightMeterDevice struct {
 func LightMeter() *LightMeterDevice {
 	EnsureADCInit()
 
-	p := machine.ADC{machine.LIGHTSENSOR}
+	p := machine.ADC{lightPin}
 	p.Configure(machine.ADCConfig{})
 
 	return &LightMeterDevice{

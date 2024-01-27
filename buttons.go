@@ -16,7 +16,7 @@ func (b *ButtonDevice) Pushed() bool {
 
 // LeftButton returns the left ButtonDevice.
 func LeftButton() *ButtonDevice {
-	left := machine.BUTTONA
+	left := btnAPin
 	left.Configure(machine.PinConfig{Mode: machine.PinInputPulldown})
 
 	return &ButtonDevice{left}
@@ -24,7 +24,7 @@ func LeftButton() *ButtonDevice {
 
 // RightButton returns the right ButtonDriver.
 func RightButton() *ButtonDevice {
-	right := machine.BUTTONB
+	right := btnBPin
 	right.Configure(machine.PinConfig{Mode: machine.PinInputPulldown})
 
 	return &ButtonDevice{right}

@@ -13,11 +13,11 @@ type SpeakerDevice struct {
 
 // Speaker returns the SpeakerDevice.
 func Speaker() *SpeakerDevice {
-	speakerShutdown := machine.D11
+	speakerShutdown := speakerEnablePin
 	speakerShutdown.Configure(machine.PinConfig{Mode: machine.PinOutput})
 	speakerShutdown.Low()
 
-	speaker := machine.D12
+	speaker := speakerPin
 	speaker.Configure(machine.PinConfig{Mode: machine.PinOutput})
 
 	bzr := buzzer.New(speaker)
